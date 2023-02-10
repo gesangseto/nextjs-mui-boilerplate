@@ -10,7 +10,7 @@ class LayoutStore {
   }
 
   changeOpen() {
-    console.log(this.open);
+    // console.log(this.open);
     this.open = !this.open;
   }
 }

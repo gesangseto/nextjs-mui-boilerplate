@@ -8,7 +8,15 @@ import Toolbar from "@mui/material/Toolbar";
 import Typography from "@mui/material/Typography";
 import * as React from "react";
 import { observer } from "mobx-react-lite";
+import {
+  AccountCircle,
+  BookOnline,
+  SupervisedUserCircle,
+} from "../../node_modules/@mui/icons-material/index";
+import { Menu, MenuItem } from "../../node_modules/@mui/material/index";
+import Link from "../../node_modules/next/link";
 const drawerWidth = 240;
+import { useRouter } from "next/router";
 
 const AppBar = styled(MuiAppBar, {
   shouldForwardProp: (prop) => prop !== "open",
@@ -29,6 +37,19 @@ const AppBar = styled(MuiAppBar, {
 }));
 
 const Header = ({ LayoutStore }) => {
+  const router = useRouter();
+  const [anchorEl, setAnchorEl] = React.useState(null);
+  const open = Boolean(anchorEl);
+  const handleClick = (event) => {
+    setAnchorEl(event.currentTarget);
+  };
+  const handleClose = () => {
+    setAnchorEl(null);
+  };
+  const handleClickLogout = () => {
+    setAnchorEl(null);
+    router.push({ pathname: "/Login" });
+  };
   return (
     <AppBar position="absolute" open={LayoutStore.open}>
       <Toolbar
@@ -62,6 +83,22 @@ const Header = ({ LayoutStore }) => {
             <NotificationsIcon />
           </Badge>
         </IconButton>
+        <IconButton color="inherit" onClick={handleClick}>
+          <AccountCircle />
+        </IconButton>
+        <Menu
+          id="basic-menu"
+          anchorEl={anchorEl}
+          open={open}
+          onClose={handleClose}
+          MenuListProps={{
+            "aria-labelledby": "basic-button",
+          }}
+        >
+          <MenuItem onClick={handleClose}>Profile</MenuItem>
+          <MenuItem onClick={handleClose}>My account</MenuItem>
+          <MenuItem onClick={handleClickLogout}>Logout</MenuItem>
+        </Menu>
       </Toolbar>
     </AppBar>
   );

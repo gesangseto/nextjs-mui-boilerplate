@@ -39,7 +39,7 @@ const Drawer = styled(MuiDrawer, {
 
 const Sidebar = ({ LayoutStore }) => {
   useEffect(() => {
-    console.log(LayoutStore.open);
+    // console.log(LayoutStore.open);
   }, [LayoutStore.open]);
 
   return (
