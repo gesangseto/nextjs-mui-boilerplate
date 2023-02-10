@@ -5,12 +5,36 @@ import IconButton from "@mui/material/IconButton";
 import List from "@mui/material/List";
 import { styled } from "@mui/material/styles";
 import Toolbar from "@mui/material/Toolbar";
+import * as React from "react";
 import { useEffect } from "react";
-import { mainListItems, secondaryListItems } from "./listItems";
+import { SuperMenu } from "./SuperMenu";
+import DashboardIcon from "@mui/icons-material/Dashboard";
 
 import { observer } from "mobx-react-lite";
+import {
+  ListItemButton,
+  ListItemIcon,
+  ListItemText,
+  Tooltip,
+  tooltipClasses,
+} from "../../node_modules/@mui/material/index";
+import {
+  ChevronRight,
+  ExpandMore,
+} from "../../node_modules/@mui/icons-material/index";
 const drawerWidth = 240;
-
+const menus = [
+  { label: "Dashboard", to: "/", children: [] },
+  {
+    label: "Master",
+    to: null,
+    children: [
+      { label: "Product", to: "/Master/Product", children: [] },
+      { label: "User", to: "/Master/User", children: [] },
+    ],
+  },
+  { label: "Setting", to: "/", children: [] },
+];
 const Drawer = styled(MuiDrawer, {
   shouldForwardProp: (prop) => prop !== "open",
 })(({ theme, open }) => ({
@@ -37,6 +61,69 @@ const Drawer = styled(MuiDrawer, {
   },
 }));
 
+const LightTooltip = styled(({ className, ...props }) => (
+  <Tooltip {...props} classes={{ popper: className }} />
+))(({ theme }) => ({
+  [`& .${tooltipClasses.tooltip}`]: {
+    backgroundColor: theme.palette.common.white,
+    color: "rgba(0, 0, 0, 0.87)",
+    boxShadow: theme.shadows[1],
+    fontSize: 16,
+  },
+}));
+const renderMenu = (item, index, useToolTip) => {
+  const [isOpen, setIsOpen] = React.useState(false);
+  const [childMenu, setChildeMenu] = React.useState([]);
+
+  useEffect(() => {
+    if (item.children && item.children.length > 0) {
+      setChildeMenu([...item.children]);
+    }
+  }, [item]);
+
+  return (
+    <div key={index}>
+      <ListItemButton
+        href={item.to ? item.to : null}
+        onClick={() => (childMenu.length > 0 ? setIsOpen(!isOpen) : null)}
+      >
+        <LightTooltip title={useToolTip ? item.label : null} placement="right">
+          <ListItemIcon>
+            <DashboardIcon />
+          </ListItemIcon>
+        </LightTooltip>
+        <ListItemText primary={item.label} />
+        {childMenu.length > 0 ? (
+          isOpen ? (
+            <ExpandMore />
+          ) : (
+            <ChevronRight />
+          )
+        ) : null}
+      </ListItemButton>
+      {isOpen &&
+        childMenu.length > 0 &&
+        childMenu.map((it, i) => renderChildMenu(it, i))}
+    </div>
+  );
+};
+
+const renderChildMenu = (item, index) => {
+  return (
+    <ListItemButton
+      sx={{ ml: 2 }}
+      key={index}
+      href={item.to ? item.to : null}
+      onClick={() => console.log(item.to)}
+    >
+      <ListItemIcon>
+        <DashboardIcon />
+      </ListItemIcon>
+      <ListItemText primary={item.label} />
+    </ListItemButton>
+  );
+};
+
 const Sidebar = ({ LayoutStore }) => {
   useEffect(() => {
     // console.log(LayoutStore.open);
@@ -58,9 +145,11 @@ const Sidebar = ({ LayoutStore }) => {
       </Toolbar>
       <Divider />
       <List component="nav">
-        {mainListItems}
+        <React.Fragment>
+          {menus.map((item, i) => renderMenu(item, i, !LayoutStore.open))}
+        </React.Fragment>
         <Divider sx={{ my: 1 }} />
-        {secondaryListItems}
+        {SuperMenu}
       </List>
     </Drawer>
   );

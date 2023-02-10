@@ -19,7 +19,7 @@ export const mainListItems = (
       <ListItemText primary="Dashboard" />
     </ListItemButton>
     <ListItemButton>
-      <ListItemIcon>
+      <ListItemIcon sx={{ ml: 2 }}>
         <ShoppingCartIcon />
       </ListItemIcon>
       <ListItemText primary="Orders" />
@@ -45,7 +45,7 @@ export const mainListItems = (
   </React.Fragment>
 );
 
-export const secondaryListItems = (
+export const SuperMenu = (
   <React.Fragment>
     <ListSubheader component="div" inset>
       Saved reports
